@@ -5,24 +5,25 @@ import {
   //ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from "react-native";
 import GoalItem from "./components/GoalItem";
+import GoalInput from "./components/GoalInput";
 
 const App = () => {
-  const [enteredGoalText, setEnteredGoalText] = useState("");
   const [courseGoals, setCourseGoals] = useState([]);
 
-  const goalInputHandler = (enteredText) => {
-    setEnteredGoalText(enteredText);
-  };
-
-  const addGoalHandler = () => {
+  const addGoalHandler = (enteredGoalText) => {
     setCourseGoals((prevCourseGoals) => [
       ...prevCourseGoals,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+  };
+
+  const deletGoalHandler = (goalId) => {
+    setCourseGoals((prevCourseGoals) =>
+      prevCourseGoals.filter((goal) => goal.id !== goalId)
+    );
   };
 
   const handleEmpty = () => {
@@ -31,19 +32,14 @@ const App = () => {
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={goalInputHandler}
-          placeholder="Your course Goal..."
-        />
-        <Button title="Add Goal" onPress={addGoalHandler} />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <View style={styles.goalsContainer}>
         <FlatList
           //https://blog.logrocket.com/deep-dive-react-native-flatlist/
           data={courseGoals}
-          renderItem={(itemData) => <GoalItem itemData={itemData} />}
+          renderItem={(itemData) => (
+            <GoalItem itemData={itemData} onDeleteItem={deletGoalHandler} />
+          )}
           refreshing={false}
           onRefresh={() => console.log("refreshing")}
           ListEmptyComponent={handleEmpty}
@@ -60,23 +56,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-  },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccccccd7",
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#ccccccd7",
-    borderRadius: 8,
-    width: "70%",
-    marginRight: 8,
-    padding: 8,
   },
   goalsContainer: {
     flex: 5,
