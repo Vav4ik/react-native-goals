@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import {
+  Button,
+  Image,
+  Modal,
+  StyleSheet,
+  TextInput,
+  View,
+} from "react-native";
 
-const GoalInput = ({ onAddGoal }) => {
+const GoalInput = ({ onAddGoal, onCancelGoal, visble }) => {
   const [enteredGoalText, setEnteredGoalText] = useState("");
 
   const goalInputHandler = (enteredText) => {
@@ -12,36 +19,75 @@ const GoalInput = ({ onAddGoal }) => {
     onAddGoal(enteredGoalText);
     setEnteredGoalText("");
   };
+
+  const cancelGoalHandler = () => {
+    onCancelGoal();
+    setEnteredGoalText("");
+  };
+
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={goalInputHandler}
-        placeholder="Your course Goal..."
-        value={enteredGoalText}
-      />
-      <Button title="Add Goal" onPress={addGoalHandler} />
-    </View>
+    <Modal animationType="slide" visible={visble}>
+      <View style={styles.inputContainer}>
+        <Image
+          source={require("../assets/images/goal.png")}
+          style={styles.image}
+        />
+        <TextInput
+          style={styles.textInput}
+          onChangeText={goalInputHandler}
+          placeholder="Your course Goal..."
+          value={enteredGoalText}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={styles.button}>
+            <Button
+              title="Cancel"
+              color={"#f31282"}
+              onPress={cancelGoalHandler}
+            />
+          </View>
+          <View style={styles.button}>
+            <Button
+              title="Add Goal"
+              color={"#b180f0"}
+              onPress={addGoalHandler}
+            />
+          </View>
+        </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   inputContainer: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccccccd7",
+    padding: 16,
+    backgroundColor: "#311b6b",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 20,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "#ccccccd7",
     borderRadius: 8,
-    width: "70%",
-    marginRight: 8,
-    padding: 8,
+    borderColor: "#e4d0ff",
+    backgroundColor: "#e4d0ff",
+    color: "#120438",
+    width: "100%",
+    padding: 16,
+  },
+  buttonContainer: {
+    marginTop: 16,
+    flexDirection: "row",
+  },
+  button: {
+    width: 100,
+    marginHorizontal: 8,
   },
 });
 

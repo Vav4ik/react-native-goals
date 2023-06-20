@@ -9,15 +9,26 @@ import {
 } from "react-native";
 import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
+import { StatusBar } from "expo-status-bar";
 
 const App = () => {
+  const [modalIsVisible, setModalIsVisible] = useState(false);
   const [courseGoals, setCourseGoals] = useState([]);
+
+  const startAddGoalHandler = () => {
+    setModalIsVisible(true);
+  };
+
+  const endAddGoalHandler = () => {
+    setModalIsVisible(false);
+  };
 
   const addGoalHandler = (enteredGoalText) => {
     setCourseGoals((prevCourseGoals) => [
       ...prevCourseGoals,
       { text: enteredGoalText, id: Math.random().toString() },
     ]);
+    endAddGoalHandler();
   };
 
   const deletGoalHandler = (goalId) => {
@@ -31,23 +42,35 @@ const App = () => {
   };
 
   return (
-    <View style={styles.appContainer}>
-      <GoalInput onAddGoal={addGoalHandler} />
-      <View style={styles.goalsContainer}>
-        <FlatList
-          //https://blog.logrocket.com/deep-dive-react-native-flatlist/
-          data={courseGoals}
-          renderItem={(itemData) => (
-            <GoalItem itemData={itemData} onDeleteItem={deletGoalHandler} />
-          )}
-          refreshing={false}
-          onRefresh={() => console.log("refreshing")}
-          ListEmptyComponent={handleEmpty}
-          //keyExtractor is used if in our array of objects there's no property "key" or "id"
-          //keyExtractor={(item, index) => item.unique_identificator}
+    <>
+      <StatusBar style="light" />
+      <View style={styles.appContainer}>
+        <Button
+          title="Add New Goal"
+          color="#a065ec"
+          onPress={startAddGoalHandler}
         />
+        <GoalInput
+          visble={modalIsVisible}
+          onAddGoal={addGoalHandler}
+          onCancelGoal={endAddGoalHandler}
+        />
+        <View style={styles.goalsContainer}>
+          <FlatList
+            //https://blog.logrocket.com/deep-dive-react-native-flatlist/
+            data={courseGoals}
+            renderItem={(itemData) => (
+              <GoalItem itemData={itemData} onDeleteItem={deletGoalHandler} />
+            )}
+            refreshing={false}
+            onRefresh={() => console.log("refreshing")}
+            ListEmptyComponent={handleEmpty}
+            //keyExtractor is used if in our array of objects there's no property "key" or "id"
+            //keyExtractor={(item, index) => item.unique_identificator}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
